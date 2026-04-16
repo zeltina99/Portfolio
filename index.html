@@ -1152,9 +1152,11 @@
                 this.renderGameList();
                 this.renderSystemList();
 
-                // Setup Hash Router
+                window.addEventListener('popstate', () => this.handleHashRoute());
                 window.addEventListener('hashchange', () => this.handleHashRoute());
-                this.handleHashRoute(); // Trigger on initial load
+
+                history.replaceState(null, null, window.location.hash || '#main');
+	    this.handleHashRoute();
             },
 
             handleHashRoute() {
