@@ -62,27 +62,33 @@
         .mermaid-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
         .mermaid-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
         
-        /* =========================================
-           [1] 프로젝트 레퀴엠 (기본 크기 - 복구)
-           ========================================= */
-        .mermaid-container .mermaid svg { min-width: 380px !important; font-size: 12px !important; }
-        .mermaid-container-lg .mermaid svg { min-width: 600px !important; font-size: 12px !important; }
-        .mermaid-container-xl .mermaid svg { min-width: 900px !important; font-size: 16px !important; }
+        /* 다이어그램 기본 크기 조정 (d1, d6) */
+        .mermaid-container .mermaid svg {
+            min-width: 380px !important;
+            font-size: 12px !important;
+        }
 
+        /* 클래스가 많은 다이어그램용 (d4, d5, d8) */
+        .mermaid-container-lg .mermaid svg {
+            min-width: 600px !important;
+            font-size: 12px !important;
+        }
+
+        /* 1.5배 확대한 다이어그램용 (d3, d7) */
+        .mermaid-container-xl .mermaid svg {
+            min-width: 900px !important;
+            font-size: 16px !important;
+        }
+
+        /* 클래스 박스 폰트 강제 */
         .mermaid-container .mermaid text,
-        .mermaid-container-lg .mermaid text { font-size: 12px !important; }
-        .mermaid-container-xl .mermaid text { font-size: 16px !important; }
-
-        /* =========================================
-           [2] 프로젝트 파라다이스 (1.5배 확대 크기)
-           ========================================= */
-        .mermaid-container.is-paradise .mermaid svg { min-width: 570px !important; font-size: 18px !important; }
-        .mermaid-container-lg.is-paradise .mermaid svg { min-width: 900px !important; font-size: 18px !important; }
-        .mermaid-container-xl.is-paradise .mermaid svg { min-width: 1350px !important; font-size: 24px !important; }
-
-        .mermaid-container.is-paradise .mermaid text,
-        .mermaid-container-lg.is-paradise .mermaid text { font-size: 18px !important; }
-        .mermaid-container-xl.is-paradise .mermaid text { font-size: 24px !important; }
+        .mermaid-container-lg .mermaid text {
+            font-size: 12px !important;
+        }
+        
+        .mermaid-container-xl .mermaid text {
+            font-size: 16px !important;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-white min-h-screen flex flex-col items-center overflow-x-hidden relative selection:bg-cyan-500 selection:text-white">
@@ -323,7 +329,7 @@
     </div>
 
     <script>
-        // Initialize Mermaid.js (초기 기본값 설정)
+        // Initialize Mermaid.js
         mermaid.initialize({
             startOnLoad: false,
             theme: 'dark',
@@ -1138,13 +1144,40 @@
         window.addEventListener('resize', () => { resize(); initParticles(); });
         resize(); initParticles(); animate();
 
-        // --- 2. Application Logic ---
+        // --- 2. Application Logic (with Router) ---
         const app = {
             chartInstance: null,
 
             init() {
                 this.renderGameList();
                 this.renderSystemList();
+
+                // Setup Hash Router
+                window.addEventListener('hashchange', () => this.handleHashRoute());
+                this.handleHashRoute(); // Trigger on initial load
+            },
+
+            handleHashRoute() {
+                const hash = window.location.hash.replace('#', '');
+                
+                // Defaults to main
+                if (!hash || hash === 'main') {
+                    this.switchView('main', true);
+                    this.closeModal('game', true);
+                } else if (hash === 'games') {
+                    this.switchView('games', true);
+                    this.closeModal('game', true);
+                } else if (hash === 'systems') {
+                    this.switchView('systems', true);
+                    this.closeModal('game', true);
+                } else if (hash.startsWith('game-')) {
+                    const gameId = hash.split('-')[1];
+                    this.switchView('games', true); // background view
+                    this.openGameDetail(gameId, true);
+                } else if (hash.startsWith('arch-')) {
+                    const gameId = hash.split('-')[1];
+                    this.openArchDetail(gameId, true);
+                }
             },
 
             renderGameList() {
@@ -1178,7 +1211,11 @@
                     </div>`).join('');
             },
 
-            switchView(viewName) {
+            switchView(viewName, fromRouter = false) {
+                if (!fromRouter) {
+                    history.pushState(null, null, '#' + viewName);
+                }
+
                 const views = ['view-main', 'view-games', 'view-systems', 'view-arch-detail'];
                 views.forEach(v => {
                     const el = document.getElementById(v);
@@ -1192,10 +1229,14 @@
                 window.scrollTo(0,0);
             },
 
-            openGameDetail(gameId) {
+            openGameDetail(gameId, fromRouter = false) {
                 const game = gameData.find(g => g.id === gameId);
                 if (!game) return;
                 
+                if (!fromRouter) {
+                    history.pushState(null, null, '#game-' + gameId);
+                }
+
                 document.getElementById('modal-game-title').innerText = game.title;
                 document.getElementById('modal-game-period').innerText = game.period;
                 document.getElementById('modal-game-team').innerText = game.teamInfo;
@@ -1231,9 +1272,13 @@
                 this.openModal('game');
             },
 
-            openArchDetail(gameId) {
+            openArchDetail(gameId, fromRouter = false) {
                 const game = gameData.find(g => g.id === gameId);
                 if (!game) return;
+
+                if (!fromRouter) {
+                    history.pushState(null, null, '#arch-' + gameId);
+                }
 
                 document.getElementById('arch-detail-title').innerText = game.title;
                 
@@ -1244,27 +1289,6 @@
                     stdContainer.classList.add('hidden');
                     customContainer.classList.remove('hidden');
                     
-                    // 다이어그램별 폰트 사이즈 분기 설정 (레퀴엠: 기본 12px, 파라다이스: 18px 확대)
-                    const isParadise = game.id === 'paradise';
-                    const baseFontSize = isParadise ? '18px' : '12px';
-
-                    mermaid.initialize({
-                        startOnLoad: false,
-                        theme: 'dark',
-                        themeVariables: {
-                            primaryColor: '#2a2a3e',
-                            primaryTextColor: '#ffffff',
-                            primaryBorderColor: '#6366f1',
-                            lineColor: '#94a3b8',
-                            secondaryColor: '#1e1e2e',
-                            tertiaryColor: '#1e1e2e',
-                            fontSize: baseFontSize,
-                            fontFamily: 'Noto Sans KR, sans-serif',
-                            classBorder: '2px',
-                            classText: '#ffffff'
-                        }
-                    });
-
                     if (game.id === 'requiem') {
                         customContainer.innerHTML = this.getRequiemArchHTML();
                     } else if (game.id === 'paradise') {
@@ -1312,15 +1336,27 @@
                     this.initDetailChart(game.arch.stats);
                 }
 
-                this.switchView('arch-detail');
+                // Call internal switchView method but instruct it NOT to override the hash
+                this.switchView('arch-detail', true); 
             },
 
-            openModal(type) { document.getElementById(`modal-${type}`).classList.remove('hidden'); },
+            openModal(type) { 
+                document.getElementById(`modal-${type}`).classList.remove('hidden'); 
+            },
             
-            closeModal(type) { 
-                document.getElementById(`modal-${type}`).classList.add('hidden'); 
-                if(type === 'game') {
-                    document.getElementById('modal-game-video').src = '';
+            closeModal(type, fromRouter = false) { 
+                const modal = document.getElementById(`modal-${type}`);
+                if (modal && !modal.classList.contains('hidden')) {
+                    modal.classList.add('hidden'); 
+                    if(type === 'game') {
+                        const videoIframe = document.getElementById('modal-game-video');
+                        if (videoIframe) videoIframe.src = '';
+                        
+                        if (!fromRouter) {
+                            // If we manually close the game modal, fallback the hash to games
+                            history.pushState(null, null, '#games');
+                        }
+                    }
                 }
             },
 
@@ -1397,7 +1433,7 @@
                     { key: 'p3', title: 'UI 다이어그램 3 — 소환 및 가챠 결과 시스템', size: 'lg',
                       desc: '소환 팝업(SummonPopup)이 탭 스위처로 캐릭터·장비 패널을 전환하고, 가챠 완료 후 GachaResultWidget이 1연차/10연차 레이아웃을 WidgetSwitcher로 분기합니다.' },
                     { key: 'p4', title: 'UI 다이어그램 4 — 인게임 HUD 및 로딩 위젯', size: 'lg',
-                      desc: 'InGameHUD가 파티 상태·소환 컨트롤·조이스틱·타이머·거점 HP 위젯을 통합 관리합니다. LoadingWidget은 MPC(Material Parameter Collection)로 연출합니다.' },
+                      desc: 'InGameHUD가 파티 상태·소환 컨트롤·조이스틱·타이머·거점 HP 위젯을 통합 관리합니다. LoadingWidget은 MPC(Material Parameter Collection)로 진행률을 시각화합니다.' },
                 ];
 
                 return `<div class="space-y-12">` +
