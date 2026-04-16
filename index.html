@@ -6,6 +6,8 @@
     <title>Zeltina Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Mermaid.js CDN 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; }
@@ -46,39 +48,42 @@
             pointer-events: none;
         }
 
-        /* Flow Chart Nodes */
-        .flow-node {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            border-radius: 8px;
-            padding: 12px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #e2e8f0;
-            position: relative;
-            transition: all 0.3s;
-        }
-        .flow-node:hover {
-            border-color: #38bdf8;
-            background: rgba(56, 189, 248, 0.1);
-            transform: translateY(-2px);
-        }
-        .flow-arrow {
-            color: #64748b;
-            font-size: 1.2rem;
+        /* Mermaid Wrapper Styles */
+        .mermaid-container {
+            background-color: #1e1e2e;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            overflow-x: auto;
             display: flex;
-            align-items: center;
             justify-content: center;
         }
+        
+        .mermaid-container::-webkit-scrollbar { height: 8px; width: 8px; }
+        .mermaid-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        .mermaid-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        
+        /* =========================================
+           [1] 프로젝트 레퀴엠 (기본 크기 - 복구)
+           ========================================= */
+        .mermaid-container .mermaid svg { min-width: 380px !important; font-size: 12px !important; }
+        .mermaid-container-lg .mermaid svg { min-width: 600px !important; font-size: 12px !important; }
+        .mermaid-container-xl .mermaid svg { min-width: 900px !important; font-size: 16px !important; }
+
+        .mermaid-container .mermaid text,
+        .mermaid-container-lg .mermaid text { font-size: 12px !important; }
+        .mermaid-container-xl .mermaid text { font-size: 16px !important; }
+
+        /* =========================================
+           [2] 프로젝트 파라다이스 (1.5배 확대 크기)
+           ========================================= */
+        .mermaid-container.is-paradise .mermaid svg { min-width: 570px !important; font-size: 18px !important; }
+        .mermaid-container-lg.is-paradise .mermaid svg { min-width: 900px !important; font-size: 18px !important; }
+        .mermaid-container-xl.is-paradise .mermaid svg { min-width: 1350px !important; font-size: 24px !important; }
+
+        .mermaid-container.is-paradise .mermaid text,
+        .mermaid-container-lg.is-paradise .mermaid text { font-size: 18px !important; }
+        .mermaid-container-xl.is-paradise .mermaid text { font-size: 24px !important; }
     </style>
-    <!-- Chosen Palette: Midnight Blue, Bioluminescent Cyan, Deep Purple -->
-    <!-- Application Structure Plan: 
-         - Main Dashboard: 3 Banners (Games, Systems, Github)
-         - View 2 (Games): Grid of 6 games -> Modal Detail
-         - View 3 (Systems): Grid of 6 systems -> Full Page Architecture Detail
-         - Architecture Detail: Header, Tech Stack, HTML-based Flow Chart, Detailed Specs
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
 <body class="bg-slate-900 text-white min-h-screen flex flex-col items-center overflow-x-hidden relative selection:bg-cyan-500 selection:text-white">
 
@@ -88,7 +93,7 @@
     <!-- Main Content Container -->
     <main class="relative z-10 w-full max-w-7xl px-4 py-8 flex flex-col items-center min-h-[90vh]">
         
-        <!-- Header (Always Visible) -->
+        <!-- Header -->
         <header class="text-center mb-8 fade-in flex-shrink-0">
             <h1 class="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-400 tracking-tighter drop-shadow-[0_0_10px_rgba(0,255,255,0.5)] cursor-pointer" onclick="app.switchView('main')">
                 ZELTINA PORTFOLIO
@@ -98,30 +103,25 @@
 
         <!-- VIEW 1: Main Dashboard -->
         <div id="view-main" class="view-section w-full max-w-6xl flex-grow flex flex-col items-center justify-center">
-            
-            <!-- Three Main Banners (Grid) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full flex-grow items-center">
-                
                 <!-- 1. Game Banner -->
                 <div onclick="app.switchView('games')" class="glass-panel rounded-2xl p-6 h-80 md:h-96 cursor-pointer transition-all duration-300 transform hover:-translate-y-2 flex flex-col group relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10"></div>
                     <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=800')] bg-cover bg-center transition-transform duration-700 group-hover:scale-110"></div>
-                    
                     <div class="relative z-20 mt-auto text-left">
                         <span class="inline-block px-3 py-1 bg-cyan-500/80 text-xs font-bold rounded-full mb-2 backdrop-blur-sm shadow-[0_0_10px_rgba(0,255,255,0.3)]">CLICK TO ENTER</span>
                         <h2 class="text-3xl font-bold text-white group-hover:text-cyan-300 transition-colors">GAME GALLERY</h2>
-                        <p class="text-gray-300 text-sm mt-1 line-clamp-2">개발한 다양한 게임 프로젝트들을 확인해보세요.</p>
+                        <p class="text-gray-300 text-sm mt-1 line-clamp-2">언리얼 엔진 기반 핵심 프로젝트들을 확인해보세요.</p>
                         <div class="mt-4 flex items-center text-cyan-400 text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
                             프로젝트 목록 보기 <span>➜</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. Architecture/System Banner (Updated) -->
+                <!-- 2. Architecture/System Banner -->
                 <div onclick="app.switchView('systems')" class="glass-panel rounded-2xl p-6 h-80 md:h-96 cursor-pointer transition-all duration-300 transform hover:-translate-y-2 flex flex-col group relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-tr from-slate-900 via-indigo-900 to-slate-800 transition-transform duration-700 group-hover:scale-105"></div>
                     <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent"></div>
-                    
                     <div class="relative z-20 flex flex-col items-center justify-center h-full text-center">
                         <div class="text-6xl mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform">⚙️</div>
                         <h2 class="text-2xl font-bold text-white mb-2">SYSTEM CORE</h2>
@@ -132,13 +132,10 @@
                     </div>
                 </div>
 
-                <!-- 3. Social Stack (Notion, GitHub, YouTube) -->
+                <!-- 3. Social Stack -->
                 <div class="h-80 md:h-96 flex flex-col gap-4">
-                    
-                    <!-- Top: Notion -->
                     <a href="https://www.notion.so/ZELTINA_NOTION-2ef92f38d65a80fc9dcadcc0b8a937c2" target="_blank" class="glass-panel rounded-xl flex-1 cursor-pointer transition-all duration-300 transform hover:-translate-y-1 flex items-center px-6 gap-4 group relative overflow-hidden">
                         <div class="absolute inset-0 bg-slate-950/50 group-hover:bg-slate-900/30 transition-colors"></div>
-                        <!-- Logo Image: Renamed to notion.png. Added onerror for fallback. -->
                         <img src="notion.png" alt="Notion" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png'" class="relative z-20 w-12 h-12 object-contain group-hover:scale-110 transition-transform">
                         <div class="relative z-20">
                             <h2 class="text-lg font-bold text-white group-hover:text-slate-200 transition-colors">NOTION</h2>
@@ -146,11 +143,8 @@
                         </div>
                         <div class="absolute right-4 text-slate-500 group-hover:text-white transition-colors">↗</div>
                     </a>
-
-                    <!-- Middle: GitHub -->
                     <a href="https://github.com/zeltina99" target="_blank" class="glass-panel rounded-xl flex-1 cursor-pointer transition-all duration-300 transform hover:-translate-y-1 flex items-center px-6 gap-4 group relative overflow-hidden">
                         <div class="absolute inset-0 bg-slate-950/50 group-hover:bg-slate-900/30 transition-colors"></div>
-                        <!-- Logo Image: Renamed to github.png. Added onerror for fallback. -->
                         <img src="github.png" alt="GitHub" onerror="this.src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'" class="relative z-20 w-12 h-12 object-contain group-hover:scale-110 transition-transform">
                         <div class="relative z-20">
                             <h2 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">GITHUB</h2>
@@ -158,11 +152,8 @@
                         </div>
                         <div class="absolute right-4 text-slate-500 group-hover:text-cyan-300 transition-colors">↗</div>
                     </a>
-
-                    <!-- Bottom: YouTube -->
                     <a href="https://www.youtube.com/@Micromys1012" target="_blank" class="glass-panel rounded-xl flex-1 cursor-pointer transition-all duration-300 transform hover:-translate-y-1 flex items-center px-6 gap-4 group relative overflow-hidden">
                         <div class="absolute inset-0 bg-slate-950/50 group-hover:bg-slate-900/30 transition-colors"></div>
-                        <!-- Logo Image: Renamed to youtube.png. Added onerror for fallback. -->
                         <img src="youtube.png" alt="YouTube" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg'" class="relative z-20 w-12 h-12 object-contain group-hover:scale-110 transition-transform">
                         <div class="relative z-20">
                             <h2 class="text-lg font-bold text-white group-hover:text-red-400 transition-colors">YOUTUBE</h2>
@@ -170,7 +161,6 @@
                         </div>
                         <div class="absolute right-4 text-slate-500 group-hover:text-red-400 transition-colors">↗</div>
                     </a>
-
                 </div>
             </div>
 
@@ -205,7 +195,7 @@
             </div>
         </div>
 
-        <!-- VIEW 3: System List Gallery (New) -->
+        <!-- VIEW 3: System List Gallery -->
         <div id="view-systems" class="view-section hidden-view w-full max-w-6xl flex-grow flex flex-col pb-12">
             <div class="w-full flex justify-between items-center mb-6 px-2 sticky top-0 z-30 py-4 bg-slate-900/80 backdrop-blur-md rounded-b-xl border-b border-white/5">
                 <button onclick="app.switchView('main')" class="flex items-center gap-2 text-indigo-300 hover:text-white transition-colors group">
@@ -219,8 +209,8 @@
             </div>
         </div>
 
-        <!-- VIEW 4: Architecture Detail Page (New Full Page) -->
-        <div id="view-arch-detail" class="view-section hidden-view w-full max-w-5xl flex-grow flex flex-col pb-12">
+        <!-- VIEW 4: Architecture Detail Page -->
+        <div id="view-arch-detail" class="view-section hidden-view w-full max-w-6xl flex-grow flex flex-col pb-12">
             <div class="w-full flex justify-between items-center mb-8 px-2">
                 <button onclick="app.switchView('systems')" class="flex items-center gap-2 text-indigo-300 hover:text-white transition-colors group">
                     <span class="text-xl group-hover:-translate-x-1 transition-transform">←</span>
@@ -232,34 +222,22 @@
                 </div>
             </div>
 
-            <!-- Content Container -->
-            <div class="glass-panel p-8 rounded-2xl w-full border border-indigo-500/20">
-                
-                <!-- 1. Tech Stack Overview -->
+            <!-- Standard Details -->
+            <div id="arch-standard-details" class="glass-panel p-8 rounded-2xl w-full border border-indigo-500/20">
                 <div class="mb-10">
                     <h3 class="text-lg font-bold text-indigo-300 mb-4 border-l-4 border-indigo-500 pl-3">CORE TECHNOLOGY</h3>
-                    <div id="arch-tech-stack" class="flex flex-wrap gap-3">
-                        <!-- Badges via JS -->
-                    </div>
+                    <div id="arch-tech-stack" class="flex flex-wrap gap-3"></div>
                 </div>
-
-                <!-- 2. Data Flow Chart (HTML/Grid based) -->
                 <div class="mb-10">
                     <h3 class="text-lg font-bold text-indigo-300 mb-4 border-l-4 border-indigo-500 pl-3">DATA FLOW & STRUCTURE</h3>
                     <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700 overflow-x-auto">
-                        <div id="arch-flow-chart" class="min-w-[600px] flex flex-col items-center gap-4">
-                            <!-- Flow Nodes via JS -->
-                        </div>
+                        <div id="arch-flow-chart" class="min-w-[600px] flex flex-col items-center gap-4"></div>
                     </div>
                 </div>
-
-                <!-- 3. Detailed Logic -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <h3 class="text-lg font-bold text-indigo-300 mb-4 border-l-4 border-indigo-500 pl-3">KEY ALGORITHMS</h3>
-                        <ul id="arch-algorithms" class="space-y-3 text-sm text-slate-300">
-                            <!-- List via JS -->
-                        </ul>
+                        <ul id="arch-algorithms" class="space-y-3 text-sm text-slate-300"></ul>
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-indigo-300 mb-4 border-l-4 border-indigo-500 pl-3">PERFORMANCE METRICS</h3>
@@ -269,172 +247,870 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Content Container specifically for Dynamic UML Content -->
+            <div id="arch-custom-details" class="w-full hidden space-y-8">
+                <!-- Injected via JS -->
+            </div>
         </div>
 
     </main>
 
-    <!-- MODAL: Game Detail (Existing) -->
+    <!-- MODAL: Game Detail -->
     <div id="modal-game" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="app.closeModal('game')"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl glass-panel bg-slate-900 p-8 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-700">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="app.closeModal('game')"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl glass-panel bg-slate-900 p-8 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-700">
             <button onclick="app.closeModal('game')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-3xl">&times;</button>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
-                <div class="md:col-span-3 space-y-4">
-                    <h2 id="modal-game-title" class="text-3xl font-bold text-cyan-300 mb-1">TITLE</h2>
-                    <p id="modal-game-period" class="text-slate-400 text-sm">Period</p>
-                    <div id="modal-game-img" class="bg-slate-800 rounded-lg h-64 w-full flex items-center justify-center border border-slate-700 overflow-hidden bg-cover bg-center"></div>
-                    <div class="grid grid-cols-2 gap-4 mt-4">
-                        <a id="modal-btn-youtube" href="#" target="_blank" class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 text-white py-3 rounded-lg font-bold transition-colors shadow-lg shadow-red-900/50"><span>▶</span> YouTube Play</a>
-                        <a id="modal-btn-github" href="#" target="_blank" class="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-lg font-bold transition-colors border border-slate-600"><span>🐙</span> GitHub Code</a>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <!-- Left Column: Video & Links -->
+                <div class="lg:col-span-3 space-y-4">
+                    <div>
+                        <h2 id="modal-game-title" class="text-3xl font-bold text-cyan-300 mb-1">TITLE</h2>
+                        <div class="flex items-center gap-3">
+                            <p id="modal-game-period" class="text-slate-400 text-sm font-mono"></p>
+                            <span id="modal-game-team" class="px-2 py-0.5 bg-slate-800 text-slate-300 text-xs rounded border border-slate-600"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Embedded YouTube Player -->
+                    <div class="relative w-full aspect-video bg-black rounded-lg overflow-hidden border border-slate-700 shadow-lg">
+                        <iframe id="modal-game-video" class="absolute top-0 left-0 w-full h-full" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+
+                    <!-- Action Link Banners -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                        <a id="modal-btn-github" href="#" target="_blank" class="flex flex-col items-center justify-center p-3 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors border border-slate-600 group">
+                            <span class="text-2xl mb-1 group-hover:scale-110 transition-transform">🐙</span>
+                            <span class="text-white text-sm font-bold">GitHub 저장소</span>
+                            <span class="text-slate-400 text-[10px]">소스 코드 확인하기</span>
+                        </a>
+                        <a id="modal-btn-docs" href="#" target="_blank" class="flex flex-col items-center justify-center p-3 bg-indigo-900/40 hover:bg-indigo-800/60 rounded-xl transition-colors border border-indigo-500/30 group">
+                            <span class="text-2xl mb-1 group-hover:scale-110 transition-transform">📄</span>
+                            <span class="text-indigo-100 text-sm font-bold">기술 문서 (Docs/PDF)</span>
+                            <span class="text-indigo-300/70 text-[10px]">설계 및 기획 열람</span>
+                        </a>
+                        <a id="modal-btn-tech-video" href="#" target="_blank" class="flex flex-col items-center justify-center p-3 bg-rose-900/40 hover:bg-rose-800/60 rounded-xl transition-colors border border-rose-500/30 group">
+                            <span class="text-2xl mb-1 group-hover:scale-110 transition-transform">🎞️</span>
+                            <span class="text-rose-100 text-sm font-bold">기술 구현 영상</span>
+                            <span class="text-rose-300/70 text-[10px]">상세 기능 시연</span>
+                        </a>
                     </div>
                 </div>
-                <div class="md:col-span-2 flex flex-col justify-center space-y-6">
-                    <div><h3 class="text-xl font-bold text-white border-b border-slate-700 pb-2 mb-3">프로젝트 소개</h3><p id="modal-game-desc" class="text-slate-300 text-sm leading-relaxed"></p></div>
-                    <div><h3 class="text-xl font-bold text-white border-b border-slate-700 pb-2 mb-3">주요 기능</h3><ul id="modal-game-features" class="text-sm text-cyan-200 list-disc list-inside space-y-1"></ul></div>
-                    <div><h3 class="text-xl font-bold text-white border-b border-slate-700 pb-2 mb-3">사용 기술</h3><div id="modal-game-tech" class="flex flex-wrap gap-2"></div></div>
+
+                <!-- Right Column: Details & Tech -->
+                <div class="lg:col-span-2 flex flex-col justify-start space-y-6 pt-2">
+                    <div>
+                        <h3 class="text-lg font-bold text-white border-b border-slate-700 pb-2 mb-3">프로젝트 소개</h3>
+                        <p id="modal-game-desc" class="text-slate-300 text-sm leading-relaxed break-keep"></p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 border-b border-slate-700 pb-2 mb-3">
+                            <h3 class="text-lg font-bold text-white">주요 기능 및 역할</h3>
+                            <span id="modal-game-role" class="text-xs font-bold px-2 py-1 bg-cyan-900/50 text-cyan-300 rounded border border-cyan-800"></span>
+                        </div>
+                        <ul id="modal-game-features" class="text-sm text-cyan-100 list-disc list-inside space-y-2"></ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-bold text-white border-b border-slate-700 pb-2 mb-3">사용 기술 (Tech Stack)</h3>
+                        <div id="modal-game-tech" class="flex flex-wrap gap-2"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DATA ---
+        // Initialize Mermaid.js (초기 기본값 설정)
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#2a2a3e',
+                primaryTextColor: '#ffffff',
+                primaryBorderColor: '#6366f1',
+                lineColor: '#94a3b8',
+                secondaryColor: '#1e1e2e',
+                tertiaryColor: '#1e1e2e',
+                fontSize: '12px',
+                fontFamily: 'Noto Sans KR, sans-serif',
+                classBorder: '2px',
+                classText: '#ffffff'
+            }
+        });
+
+        // 템플릿 리터럴 들여쓰기 제거 헬퍼
+        function dedent(str) {
+            const lines = str.split('\n');
+            const nonEmpty = lines.filter(l => l.trim().length > 0);
+            if (!nonEmpty.length) return str;
+            const minIndent = Math.min(...nonEmpty.map(l => l.match(/^(\s*)/)[1].length));
+            return lines.map(l => l.slice(minIndent)).join('\n').trim();
+        }
+
+        // HTML 태그 치환 헬퍼
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        // Mermaid.js 다이어그램 정의 (REQUIEM)
+        const DIAGRAMS_REQUIEM = {
+            d1: dedent(`
+                classDiagram
+                class ProjectRequiem {
+                    <<MaxLogic>>
+                    +GameMode
+                    +GameInstance
+                    +GameState
+                }
+                class ComponentSystems {
+                    <<SharedSystems>>
+                    +UStatComponent
+                    +ULockOnComponent
+                    +UWeaponMasteryComponent
+                }
+                class DataInfo {
+                    <<DataLayer>>
+                    +FCoreStat
+                    +FLevelUpStats
+                    +FBossPatternData
+                    +FItemData
+                }
+                ProjectRequiem --> ComponentSystems : depends
+                ComponentSystems --> DataInfo : depends
+            `),
+
+            d2a: dedent(`
+                classDiagram
+                class ACharacter {
+                    <<EngineBase>>
+                }
+                class ABaseCharacter {
+                    <<Cpp>>
+                    +UStatComponent StatComponent
+                    +ReceiveDamage(float dmg)
+                    +ApplyHeal(float amount)
+                    +Die()
+                    +Roll()
+                    +Attack(AActor target, float dmg)
+                    +SetStunned(bool bStun)
+                    +TakeDamage()
+                }
+                class APlayerCharacter {
+                    <<Cpp>>
+                    -UWeaponManager WeaponManager
+                    -ULockOnComponent LockOnComponent
+                    +Move()
+                    +Look()
+                    +Roll()
+                    +AttackInput()
+                    +PlayComboAttack()
+                    +EatPotion()
+                    +RespawnPlayer()
+                }
+                class AEnemyCharacter {
+                    <<Cpp>>
+                    -UWidgetComponent HPWidget
+                    -EEnemyState CurrentState
+                    +UpdateAIState()
+                    +ResetEnemy()
+                    +AttackHitCheck()
+                    +Die()
+                }
+                class ARangedEnemyCharacter {
+                    <<Cpp>>
+                    -TSubclassOf_AProjectile ProjectileClass
+                    +AttackHitCheck()
+                    +FireProjectile()
+                }
+                ABaseCharacter --|> ACharacter
+                APlayerCharacter --|> ABaseCharacter
+                AEnemyCharacter --|> ABaseCharacter
+                ARangedEnemyCharacter --|> AEnemyCharacter
+            `),
+
+            d2b: dedent(`
+                classDiagram
+                class ABaseCharacter {
+                    <<Cpp>>
+                }
+                class ABossBase {
+                    <<Cpp>>
+                    -EBossState CurrentState
+                    -TArray_FBossPatternData PatternTable
+                    -int32 CurrentPhase
+                    +UpdateState()
+                    +SelectPattern()
+                    +TakeDamage()
+                }
+                class AStage1Boss {
+                    <<Cpp>>
+                    +OnPhaseChanged()
+                }
+                class AStage2Boss {
+                    <<Cpp>>
+                    +OnPhaseChanged()
+                }
+                class ALastBossCharacter {
+                    <<Cpp>>
+                    -int32 Phase
+                    -TArray_UAnimMontage PhaseOnePatterns
+                    -TArray_UAnimMontage PhaseTwoPatterns
+                    +ActivateBossBattle()
+                    +ResetBossToDefault()
+                    +Die()
+                }
+                class IBossControlInterface {
+                    <<interface>>
+                    +ActivateBossBattle()
+                    +ResetBossToDefault()
+                    +GetBossStatDelegate()
+                }
+                ABossBase --|> ABaseCharacter
+                AStage1Boss --|> ABossBase
+                AStage2Boss --|> ABossBase
+                ALastBossCharacter --|> ABaseCharacter
+                AStage1Boss ..|> IBossControlInterface
+                AStage2Boss ..|> IBossControlInterface
+                ALastBossCharacter ..|> IBossControlInterface
+            `),
+
+            d3: dedent(`
+                classDiagram
+                class UBaseWidget {
+                    <<Cpp>>
+                    +BindDelegates()
+                    +NativeConstruct()
+                }
+                class UPRHUDWidget {
+                    <<Cpp>>
+                    -UStatBarWidget StatBar
+                    -UBossHPWidget BossWidget
+                    +SetStatValue(float cur, float max)
+                    +ShowBossBar(bool bShow)
+                    +FadeTick()
+                }
+                class UEnemyCharacterHPWidget {
+                    <<Cpp>>
+                    -float TargetPercent
+                    -float DelayPercent
+                    -float StepPerSecond
+                    +UpdateHP(float cur, float max)
+                    +NativeTick(float dt)
+                }
+                class UPlayerDeathWidget {
+                    <<Cpp>>
+                    +PlayDeathAnimation()
+                    +OnRetryClicked()
+                    +OnMainMenuClicked()
+                }
+                class UMainMenuWidget {
+                    <<Cpp>>
+                    +OnStartClicked()
+                    +OnOptionClicked()
+                    +OnQuitClicked()
+                }
+                class UBonfireWidget {
+                    <<Cpp>>
+                    +OnBonfireWidgetClosed()
+                    +InitializeWidget()
+                }
+                class UPRStatWidget {
+                    <<Cpp>>
+                    +OnStatUpgradeClicked(ELevelUpStats stat)
+                    +RefreshStatDisplay()
+                }
+                class UStatComponent {
+                    <<UActorComponent>>
+                    +OnRegenStatChanged
+                    +OnStatChanged
+                }
+                UBaseWidget <|-- UPRHUDWidget
+                UBaseWidget <|-- UEnemyCharacterHPWidget
+                UBaseWidget <|-- UPlayerDeathWidget
+                UBaseWidget <|-- UMainMenuWidget
+                UBaseWidget <|-- UBonfireWidget
+                UBaseWidget <|-- UPRStatWidget
+                UStatComponent ..> UPRHUDWidget : OnRegenStatChanged
+                UStatComponent ..> UEnemyCharacterHPWidget : OnStatChanged
+            `),
+
+            d4: dedent(`
+                classDiagram
+                class ELevelUpStats {
+                    <<enumeration>>
+                    Strength
+                    Dexterity
+                }
+                class EFullStats {
+                    <<enumeration>>
+                    Health
+                    Stamina
+                    AttackSpeed
+                    PhysicalAttack
+                    Defense
+                }
+                class FCoreStat {
+                    <<struct>>
+                    +float Current
+                    +float Max
+                    +float TickRate
+                    +Clamp()
+                }
+                class FLevelUpStats {
+                    <<struct>>
+                    +TMap_ELevelUpStats_int32 StatMap
+                    +Initialize()
+                    +AllocatePoint(ELevelUpStats stat)
+                }
+                class FItemData {
+                    <<struct>>
+                    +FName ItemID
+                    +FText Name
+                    +UTexture2D Icon
+                    +UStaticMesh Mesh
+                }
+                class FItemStatEffect {
+                    <<struct>>
+                    +EFullStats StatType
+                    +float DeltaValue
+                }
+                class UItemBase {
+                    <<UObject>>
+                    +int32 Quantity
+                    +TMap_EFullStats_float StatModifiers
+                    +FItemData CachedItemData
+                }
+                class AItemActor {
+                    <<AActor>>
+                    +UItemBase ItemData
+                    +InitializeFromItem(UItemBase item)
+                }
+                FLevelUpStats --> ELevelUpStats : key type
+                FItemStatEffect --> EFullStats : uses
+                UItemBase --> FItemData : caches
+                AItemActor --> UItemBase : contains
+            `),
+
+            d5: dedent(`
+                classDiagram
+                class UStatComponent {
+                    <<UActorComponent>>
+                    -TMap_EFullStats_FCoreStat StatsRegenMap
+                    -TMap_EFullStats_FCoreStat StatsNonRegenMap
+                    -FTimerHandle RegenTimerHandle
+                    -bool bIsStaminaRegenPaused
+                    -FLevelUpStats LevelUpData
+                    +FOnRegenStatChanged OnRegenStatChanged
+                    +FOnStatChanged OnStatChanged
+                    +GetStatCurrent(EFullStats stat) : float
+                    +GetStatMax(EFullStats stat) : float
+                    +ChangeStatCurrent(EFullStats stat, float delta)
+                    +SetStaminaRegenPaused(bool bPaused)
+                    +UpgradeStrength()
+                    +UpgradeDexterity()
+                    +AddCurrentExp(float exp)
+                    +HandleStatRegeneration()
+                }
+                class FCoreStat {
+                    <<struct>>
+                    +float Current
+                    +float Max
+                    +float TickRate
+                    +Clamp()
+                }
+                class FStatEntry {
+                    <<struct>>
+                    +EFullStats StatType
+                    +float Current
+                    +float Max
+                }
+                class FLevelUpStats {
+                    <<struct>>
+                    +TMap_ELevelUpStats_int32 StatMap
+                    +Initialize()
+                    +AllocatePoint(ELevelUpStats stat)
+                }
+                class EFullStats {
+                    <<enumeration>>
+                    Health
+                    Stamina
+                    AttackSpeed
+                    PhysicalAttack
+                    Defense
+                }
+                class ELevelUpStats {
+                    <<enumeration>>
+                    Strength
+                    Dexterity
+                }
+                UStatComponent *-- FCoreStat : StatsRegenMap
+                UStatComponent *-- FLevelUpStats : LevelUpData
+                UStatComponent ..> FStatEntry : broadcasts
+                FLevelUpStats --> ELevelUpStats : key
+                FStatEntry --> EFullStats : StatType
+            `),
+
+            d6: dedent(`
+                classDiagram
+                class ABossBase {
+                    <<Cpp>>
+                    -EBossState CurrentState
+                    -int32 CurrentPhase
+                    -ACharacter TargetCharacter
+                    -TArray_FBossPatternData PatternTable
+                    -float Phase2StartHPRatio
+                    -float AttackBlockedUntilTime
+                    -bool bIsExecutingPattern
+                    -bool bIsInHitReact
+                    -UAudioComponent BossBGMAudioComp
+                    +UpdateState(float dt)
+                    +SelectPattern()
+                    +PerformMeleeAttack()
+                    +PerformRangedAttack()
+                    +TryPlayHitReact()
+                    +StartInvulnerability()
+                    +TakeDamage()
+                    +StartBossBGM()
+                    +StopBossBGM()
+                    +SwitchBossBGMByPhase(int32 phase)
+                }
+                class EBossState {
+                    <<enumeration>>
+                    Idle
+                    Chase
+                    Attack
+                    PhaseChange
+                    Dead
+                }
+                class FBossPatternData {
+                    <<struct>>
+                    +EBossPattern Pattern
+                    +float MinRange
+                    +float MaxRange
+                    +int32 OnlyPhase
+                    +float Weight
+                    +float Cooldown
+                    +UAnimMontage Montage
+                    +float AoERadius
+                    +float AoEDamage
+                    +float InvulnerableDuration
+                }
+                class EBossPattern {
+                    <<enumeration>>
+                    None
+                    MeleeCombo1
+                    MeleeCombo2
+                    RangedShot
+                    AoESlam
+                }
+                ABossBase --> EBossState : CurrentState
+                ABossBase *-- FBossPatternData : PatternTable
+                FBossPatternData --> EBossPattern : Pattern
+            `),
+
+            d7: dedent(`
+                classDiagram
+                class APlayerCharacter {
+                    <<Cpp>>
+                    -float SprintSpeed
+                    -float WalkSpeed
+                    -bool bIsSprint
+                    -bool bIsAttacking
+                    -int32 CurrentCombo
+                    -int32 HPPotion
+                    +Move()
+                    +Look()
+                    +Roll()
+                    +AttackInput()
+                    +PlayComboAttack()
+                    +EatPotion()
+                    +RespawnPlayer()
+                    +TraceForInteraction()
+                    +SetSprintMode()
+                    +SetWalkMode()
+                }
+                class ULockOnComponent {
+                    <<UActorComponent>>
+                    -float SearchRadius
+                    -bool bIsLockOn
+                    +FindTarget()
+                    +EnableLockOn()
+                    +DisableLockOn()
+                    +UpdateCameraRotation()
+                }
+                class UWeaponMasteryComponent {
+                    <<UActorComponent>>
+                    -TMap_EWeaponCode_int32 KillCountMap
+                    -TMap_EWeaponCode_EWeaponRank RankMap
+                    +AddKillCount(EWeaponCode code)
+                    +CheckRankUp(EWeaponCode code)
+                    +UpdateStatsByRank(EWeaponCode code)
+                    +UpdateVFXByRank(EWeaponCode code)
+                }
+                class AWeaponActor {
+                    <<AActor>>
+                    -TMap_EWeaponCode_FWeaponComboData WeaponComboMap
+                    -EWeaponCode CurrentWeaponType
+                    +SwapWeapon(EWeaponCode code)
+                    +GetCurrentMontage() : UAnimMontage
+                }
+                class FWeaponComboData {
+                    <<struct>>
+                    +UAnimMontage Montage
+                    +int32 MaxComboCount
+                }
+                class UInputConfig {
+                    <<UDataAsset>>
+                    +TMap_EInput_UInputAction InputActions
+                    +GetAction(EHumanoidInput input) : UInputAction
+                }
+                APlayerCharacter *-- ULockOnComponent : LockOnComponent
+                APlayerCharacter *-- UWeaponMasteryComponent : WeaponMastery
+                APlayerCharacter --> AWeaponActor : WeaponManager
+                AWeaponActor *-- FWeaponComboData : WeaponComboMap
+                APlayerCharacter --> UInputConfig : InputConfig
+            `),
+
+            d8: dedent(`
+                classDiagram
+                class AEnemyCharacter {
+                    <<Cpp>>
+                    -EEnemyState CurrentState
+                    -FVector HomeLocation
+                    -float SearchRadius
+                    -float CanChaseRange
+                    -FTimerHandle DeadTimerHandle
+                    -FTimerHandle PatrolTimerHandle
+                    +UpdateAIState()
+                    +AttackHitCheck()
+                    +ResetEnemy()
+                    +Die()
+                    +HideBody()
+                }
+                class ARangedEnemyCharacter {
+                    <<Cpp>>
+                    -TSubclassOf_AEnemyProjectile ProjectileClass
+                    +AttackHitCheck()
+                    +FireProjectile()
+                }
+                class AEnemyProjectile {
+                    <<AActor>>
+                    -float InitialLifeSpan
+                    -float ProjectileSpeed
+                    -bool bIsAlive
+                    +Tick(float dt)
+                    +OnHit()
+                }
+                class AEnemySpawner {
+                    <<AActor>>
+                    -TSubclassOf_AEnemyCharacter EnemyClass
+                    -FVector HomeLocation
+                    +SpawnEnemy()
+                    +RespawnEnemy()
+                }
+                class EEnemyState {
+                    <<enumeration>>
+                    Idle
+                    Patrol
+                    Chase
+                    Attack
+                    Dead
+                }
+                class UEnemyCharacterHPWidget {
+                    <<UUserWidget>>
+                    -float TargetPercent
+                    -float DelayPercent
+                    -float StepPerSecond
+                    +UpdateHP(float cur, float max)
+                    +NativeTick(float dt)
+                }
+                AEnemyCharacter --> EEnemyState : CurrentState
+                AEnemyCharacter <|-- ARangedEnemyCharacter
+                ARangedEnemyCharacter ..> AEnemyProjectile : spawns
+                AEnemySpawner --> AEnemyCharacter : manages
+                AEnemyCharacter *-- UEnemyCharacterHPWidget : HPWidget
+            `)
+        };
+
+        // Mermaid.js 다이어그램 정의 (PARADISE)
+        const DIAGRAMS_PARADISE = {
+            p1: dedent(`
+                classDiagram
+                class UParadiseTitleHUDWidget {
+                    <<HUD_Title>>
+                    -TArray_TSoftObjectPtr PreloadAssets
+                    -FName NextLevelName
+                    -TSubclassOf_USettingsPopupWidget SettingsPopupClass
+                    +ToggleSettingsPopup()
+                    +GetSettingsPopupInstance() : USettingsPopupWidget
+                    #NativeConstruct()
+                }
+                class UParadiseLobbyHUDWidget {
+                    <<HUD_Lobby>>
+                    -TObjectPtr_UParadiseLobbyTopBarWidget WBP_TopBar
+                    -TObjectPtr_UParadiseLobbyMenuPanelWidget WBP_MenuPanel
+                    -TObjectPtr_UWidgetSwitcher Switcher_Content
+                    -TMap_EParadiseLobbyMenu_TSubclassOf MenuWidgetClasses
+                    -TSubclassOf_USettingsPopupWidget SettingsPopupClass
+                    +UpdateMenuStats(EParadiseLobbyMenu InCurrentMenu)
+                    +ToggleSettingsPopup()
+                    +GetSettingsPopupInstance() : USettingsPopupWidget
+                    #NativeConstruct()
+                }
+                class UInGameHUDWidget {
+                    <<HUD_InGame>>
+                    -TSubclassOf_USettingsPopupWidget SettingsPopupClass
+                    -float CameraBlendTime
+                    -TObjectPtr_UTexture2D Tex_AutoModeOn
+                    -TObjectPtr_UTexture2D Tex_AutoModeOff
+                    +InitializeHUD()
+                    +ToggleSettingsPopup()
+                    +GetSettingsPopupInstance() : USettingsPopupWidget
+                    +GetVirtualJoystick() : UVirtualJoystickWidget
+                    +GetActionControlPanel() : UActionControlPanel
+                    +GetSummonControlPanel() : USummonControlPanel
+                    +GetPartyStatusPanel() : UPartyStatusPanel
+                    +ShowMouseCursor(bool bShow)
+                    #NativeConstruct()
+                    #NativeDestruct()
+                }
+                class USettingsPopupWidget {
+                    <<Popup_Settings>>
+                    -TObjectPtr_USlider Slider_BGM
+                    -TObjectPtr_USlider Slider_SFX
+                    -TObjectPtr_USlider Slider_Graphics
+                    -TObjectPtr_UParadiseCommonButton Btn_ResumeGame
+                    -TObjectPtr_UParadiseCommonButton Btn_ReturnToLobby
+                    -TObjectPtr_UParadiseCommonButton Btn_Retry
+                    -bool bPauseGameOnOpen
+                    -FName LobbyLevelName
+                    -FName LoadingMapName
+                    +ToggleSettings()
+                    +OpenSettings()
+                    +CloseSettings()
+                    +OnResumeGameClicked()
+                    #NativeConstruct()
+                }
+                UParadiseTitleHUDWidget --> USettingsPopupWidget : owns
+                UParadiseLobbyHUDWidget --> USettingsPopupWidget : owns
+                UInGameHUDWidget --> USettingsPopupWidget : owns
+            `),
+
+            p2: dedent(`
+                classDiagram
+                class UParadiseLobbyHUDWidget {
+                    <<HUD_Lobby>>
+                    +UpdateMenuStats(EParadiseLobbyMenu menu)
+                    +ToggleSettingsPopup()
+                }
+                class UParadiseLobbyTopBarWidget {
+                    <<Widget_TopBar>>
+                }
+                class UParadiseLobbyMenuPanelWidget {
+                    <<Widget_MenuPanel>>
+                }
+                class UParadiseSquadMainWidget {
+                    <<Widget_Squad_Main>>
+                    -TObjectPtr_UWidgetSwitcher Switcher_MainScreen
+                    -TObjectPtr_UParadiseSquadInventoryWidget WBP_InventoryPanel
+                    -TObjectPtr_UParadiseSquadFormationWidget WBP_FormationPanel
+                    -TObjectPtr_UParadiseSquadDetailWidget WBP_DetailPanel
+                    -TObjectPtr_UWidgetAnimation Anim_TouchBlink
+                    -TObjectPtr_UParadiseResourceWarningWidget Widget_Warning
+                    +RefreshInventoryUI()
+                    +ResetPanelState()
+                    +OnEnterSquadUI()
+                    #NativeConstruct()
+                    #NativeDestruct()
+                }
+                class UParadiseSquadInventoryWidget {
+                    <<Widget_Squad_Inventory>>
+                }
+                class UParadiseSquadFormationWidget {
+                    <<Widget_Squad_Formation>>
+                }
+                class UParadiseSquadDetailWidget {
+                    <<Widget_Squad_Detail>>
+                }
+                UParadiseLobbyHUDWidget *-- UParadiseLobbyTopBarWidget : WBP_TopBar
+                UParadiseLobbyHUDWidget *-- UParadiseLobbyMenuPanelWidget : WBP_MenuPanel
+                UParadiseLobbyHUDWidget --> UParadiseSquadMainWidget : Switcher_Content
+                UParadiseSquadMainWidget *-- UParadiseSquadInventoryWidget : WBP_InventoryPanel
+                UParadiseSquadMainWidget *-- UParadiseSquadFormationWidget : WBP_FormationPanel
+                UParadiseSquadMainWidget *-- UParadiseSquadDetailWidget : WBP_DetailPanel
+            `),
+
+            p3: dedent(`
+                classDiagram
+                class UParadiseSummonPopup {
+                    <<Popup_Summon>>
+                    -TObjectPtr_UButton Btn_Tab_Character
+                    -TObjectPtr_UButton Btn_Tab_Equipment
+                    -TObjectPtr_UButton Btn_Back
+                    -TObjectPtr_UTextBlock Text_AetherAmount
+                    -TObjectPtr_UWidgetSwitcher Switcher_Content
+                    -TObjectPtr_UParadiseSummonPanel Panel_Character
+                    -TObjectPtr_UParadiseSummonPanel Panel_Equipment
+                    -TObjectPtr_UParadiseResourceWarningWidget Widget_ResourceWarning
+                    +RefreshCurrencyUI()
+                    #NativeConstruct()
+                    #NativeDestruct()
+                }
+                class UParadiseSummonPanel {
+                    <<Widget_SummonPanel>>
+                }
+                class UParadiseGachaResultWidget {
+                    <<Widget_GachaResult>>
+                    -TObjectPtr_UWidgetSwitcher Switcher_ResultLayout
+                    -TObjectPtr_UButton Btn_Confirm
+                    -TObjectPtr_UImage Img_SingleItemIcon
+                    -TObjectPtr_UImage Img_SingleRarityBorder
+                    -TObjectPtr_UTextBlock Text_SingleItemName
+                    -TObjectPtr_UUniformGridPanel Grid_MultiResult
+                    -TMap_EItemRarity_UTexture2D RarityBorderTextureMap
+                    -TSubclassOf_UParadiseGachaResultSlotWidget SlotWidgetClass
+                    -int32 GridColumnCount
+                    +ShowResults(TArray_FGachaResult Results)
+                    #OnDisplaySingleResult(FGachaResult Result)
+                    #OnDisplayMultiResult(TArray_FGachaResult Results)
+                    #NativeConstruct()
+                    #NativeDestruct()
+                }
+                class UParadiseGachaResultSlotWidget {
+                    <<Widget_GachaSlot>>
+                }
+                class UParadiseResourceWarningWidget {
+                    <<Widget_Warning>>
+                }
+                UParadiseSummonPopup *-- UParadiseSummonPanel : Panel_Character
+                UParadiseSummonPopup *-- UParadiseSummonPanel : Panel_Equipment
+                UParadiseSummonPopup *-- UParadiseResourceWarningWidget : Widget_ResourceWarning
+                UParadiseSummonPopup --> UParadiseGachaResultWidget : shows result
+                UParadiseGachaResultWidget *-- UParadiseGachaResultSlotWidget : Grid_MultiResult
+            `),
+
+            p4: dedent(`
+                classDiagram
+                class ULoadingWidget {
+                    <<Widget_Loading>>
+                    -FSpecialLoadingImages SpecialImages
+                    -TObjectPtr_UMaterialParameterCollection MPC_Loading
+                    +InitLoadingImage(FName CurrentLevel FName TargetLevel TSoftObjectPtr InDefaultStageImage)
+                    +SetLoadingPercent(float Percent)
+                    +SetLoadingText(FText InName FText InDesc)
+                    +SetBackgroundImage(UTexture2D InTexture)
+                    +InitAsCovered()
+                    +PlayDisappearAnim()
+                    +ShowContent()
+                    #NativeConstruct()
+                    #OnLoadingComplete()
+                }
+                class UInGameHUDWidget {
+                    <<HUD_InGame>>
+                    +InitializeHUD()
+                    +ShowMouseCursor(bool bShow)
+                }
+                class UPartyStatusPanel {
+                    <<Panel_PartyStatus>>
+                }
+                class USummonControlPanel {
+                    <<Panel_SummonControl>>
+                }
+                class UVirtualJoystickWidget {
+                    <<Widget_Joystick>>
+                }
+                class UGameTimerWidget {
+                    <<Widget_Timer>>
+                }
+                class UHomeBaseHPWidget {
+                    <<Widget_HomeHP>>
+                }
+                UInGameHUDWidget *-- UPartyStatusPanel : GetPartyStatusPanel
+                UInGameHUDWidget *-- USummonControlPanel : GetSummonControlPanel
+                UInGameHUDWidget *-- UVirtualJoystickWidget : GetVirtualJoystick
+                UInGameHUDWidget --> UGameTimerWidget : manages
+                UInGameHUDWidget --> UHomeBaseHPWidget : manages
+            `)
+        };
+
+        // --- DATA: 3 Projects ---
         const gameData = [
             {
-                id: 'abyss',
-                title: 'PROJECT: ABYSS',
-                period: '2024.06 - 2024.08 | Unity 3D',
-                desc: '깊은 심해를 탐험하며 잃어버린 고대 도시를 찾는 로그라이크 어드벤처입니다. 독자적인 쉐이더를 사용하여 심해의 몽환적인 분위기를 구현했습니다.',
-                features: ['실시간 유체 시뮬레이션', '절차적 맵 생성 (Procedural Generation)', '다이내믹 라이팅 시스템'],
-                tech: ['Unity', 'C#', 'HLSL', 'Photon'],
-                img: 'https://images.unsplash.com/photo-1551006737-1c4b787c881c?auto=format&fit=crop&q=80&w=800',
-                youtube: 'https://youtube.com', github: 'https://github.com/zeltina99',
-                // Architecture Details
-                arch: {
-                    desc: '마이크로서비스 아키텍처(MSA)를 적용하여 게임 로직과 데이터 처리를 분리했습니다.',
-                    flow: [
-                        { type: 'node', text: 'Client (Unity)' },
-                        { type: 'arrow', text: 'Auth & Matchmaking' },
-                        { type: 'node', text: 'AWS API Gateway' },
-                        { type: 'arrow', text: 'Route Request' },
-                        { type: 'split', nodes: ['Game Server (Photon)', 'User Data Service (Node.js)'] },
-                        { type: 'arrow', text: 'Persist Data' },
-                        { type: 'node', text: 'MongoDB Atlas' }
-                    ],
-                    algos: ['Marching Cubes 알고리즘을 이용한 지형 생성', 'Boids 알고리즘 기반 물고기 군집 AI', 'A* Pathfinding 최적화'],
-                    stats: [85, 90, 95, 88, 92] // [Stab, Scal, Sec, Perf, Code]
-                }
+                id: 'requiem',
+                title: 'PROJECT: REQUIEM',
+                period: '2025.12.11 - 2026.01.02',
+                teamInfo: 'Team (5인)',
+                role: 'Player Combat (전투 담당)',
+                desc: '다크 판타지 세계관을 배경으로 한 소울라이크 지향의 3D 액션 RPG입니다. 어둡고 긴장감 넘치는 분위기 속에서 플레이어의 조작 숙련도와 전략적 판단이 요구되는 하드코어 전투 경험을 제공하는 것을 목표로 개발되었습니다.',
+                features: [
+                    '무기 숙련도 시스템 (Weapon Proficiency System) 구현',
+                    '타겟팅 락온(Lock-on) 시스템 및 카메라 보정',
+                    '캐릭터 성장 메커니즘 및 스탯 로직 구현'
+                ],
+                tech: ['Unreal Engine 5.5', 'C++'],
+                img: 'https://img.youtube.com/vi/PqOtLOKC_Ec/maxresdefault.jpg',
+                videoUrl: 'https://www.youtube.com/embed/PqOtLOKC_Ec',
+                github: 'https://github.com/tksdhkajsl/Project_Requiem.git',
+                docs: 'https://drive.google.com/file/d/1EJorAgQiBh5hkdWDPGCeD5LlsGgSXXfz/view?usp=sharing',
+                techVideo: 'https://youtu.be/zpqQfPuOYp4',
+                hasCustomArch: true 
             },
             {
-                id: 'racer',
-                title: 'NEON RACER',
-                period: '2023.12 - 2024.02 | Unreal Engine 5',
-                desc: '사이버펑크 도시를 질주하는 하이퍼 아케이드 레이싱 게임입니다. 속도감 있는 연출과 멀티플레이 대전 기능을 지원합니다.',
-                features: ['물리 기반 차량 컨트롤', '16인 실시간 멀티플레이', '커스텀 트랙 에디터'],
-                tech: ['UE5', 'C++', 'Blueprints', 'AWS Gamelift'],
+                id: 'paradise',
+                title: 'PROJECT: PARADISE',
+                period: '2026.02.04 - 2026.04.03',
+                teamInfo: 'Team (5인)',
+                role: 'UI/UX & 가챠 연출 담당',
+                desc: '서브컬처 장르를 표방하는 태그 액션 타워 디펜스 게임입니다. 안드로이드와 윈도우 환경을 모두 지원하는 크로스 플랫폼으로 개발되었으며, 3인 1조 스쿼드를 편성하고 유닛을 소환하여 적의 타워를 철거하는 전략적인 전투가 핵심인 프로젝트입니다.',
+                features: [
+                    '스쿼드 편성 시 로비와 메인 캐릭터가 상호작용하는 시스템 (이벤트 트리거)',
+                    '확률 기반 가챠(Gacha) 시스템 및 화려한 획득 시각 연출',
+                    '비동기 로딩(Async Loading)을 활용한 프리 에셋 로딩 시스템 최적화'
+                ],
+                tech: ['Unreal Engine 5.5', 'C++', 'Doxygen'],
+                img: 'https://img.youtube.com/vi/mTPXXPP1o6k/maxresdefault.jpg',
+                videoUrl: 'https://www.youtube.com/embed/mTPXXPP1o6k',
+                github: 'https://github.com/ParadiseProject/ProjectParadise.git',
+                docs: 'https://paradiseproject.github.io/ParadiseProject_Docs/',
+                techVideo: 'https://youtu.be/SW4E6HIwghs?si=FLwKXP-KYUKsGNIE',
+                hasCustomArch: true
+            },
+            {
+                id: 'katana',
+                title: 'PROJECT: KATANA NEON',
+                period: '개발 중 (TBD)',
+                teamInfo: 'Personal (개인)',
+                role: '1인 개발 (Solo)',
+                desc: '사이버펑크 배경의 네온사인이 빛나는 도시에서 펼쳐지는 하이퍼 스피드 카타나 액션 게임입니다. 화려한 검술과 회피 기동을 결합한 스타일리시 액션을 목표로 제작 중인 개인 프로젝트입니다.',
+                features: [
+                    '스타일리시 카타나 콤보 액션 로직 (개발 중)',
+                    '사이버펑크 분위기의 레벨 디자인',
+                    '적 AI 및 패스파인딩 최적화 작업 중'
+                ],
+                tech: ['Unreal Engine 5.5', 'C++'],
                 img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800',
-                youtube: 'https://youtube.com', github: 'https://github.com/zeltina99',
+                videoUrl: '', 
+                github: 'https://github.com/zeltina99',
+                docs: '#',
+                techVideo: '#',
+                hasCustomArch: false,
                 arch: {
-                    desc: 'Dedicated Server 방식을 사용하여 레이턴시를 최소화하고 공정한 판정을 보장합니다.',
+                    desc: '1인 개발 프로젝트로 빠른 프로토타이핑을 위해 모듈화된 아키텍처를 적용했습니다.',
                     flow: [
-                        { type: 'node', text: 'Client (UE5)' },
-                        { type: 'arrow', text: 'UDP Packet (Input)' },
-                        { type: 'node', text: 'AWS Gamelift Fleet' },
-                        { type: 'arrow', text: 'Replication / State Sync' },
-                        { type: 'node', text: 'Session Manager (Redis)' },
-                        { type: 'arrow', text: 'Async Save' },
-                        { type: 'node', text: 'DynamoDB' }
+                        { type: 'node', text: 'Character Action Module' },
+                        { type: 'arrow', text: 'Combo State' },
+                        { type: 'node', text: 'Animation Montage Manager' },
+                        { type: 'arrow', text: 'Hit Detection' },
+                        { type: 'node', text: 'Enemy State Machine' }
                     ],
-                    algos: ['서버 권한 기반 물리 시뮬레이션 (Server Authoritative)', 'Client-side Prediction & Interpolation', 'Quadtree 공간 분할 충돌 감지'],
-                    stats: [95, 80, 85, 98, 85]
-                }
-            },
-            {
-                id: 'sky',
-                title: 'SKY ISLAND',
-                period: '2023.05 - 2023.07 | Unity 3D',
-                desc: '하늘에 떠 있는 섬들을 오가며 퍼즐을 푸는 힐링 어드벤처 게임입니다. 로우 폴리곤 아트 스타일을 적용했습니다.',
-                features: ['중력 조작 퍼즐 메커니즘', '오픈 월드 비행 시스템', '잔잔한 BGM 시스템'],
-                tech: ['Unity', 'C#', 'Blender'],
-                img: 'https://images.unsplash.com/photo-1621255551927-4148480b5435?auto=format&fit=crop&q=80&w=800',
-                youtube: 'https://youtube.com', github: 'https://github.com/zeltina99',
-                arch: {
-                    desc: '클라이언트 중심의 구조로, 대규모 오픈 월드 렌더링 최적화에 집중했습니다.',
-                    flow: [
-                        { type: 'node', text: 'Player Controller' },
-                        { type: 'arrow', text: 'Input Event' },
-                        { type: 'split', nodes: ['Physics System (Gravity)', 'Audio Manager (FMOD)'] },
-                        { type: 'arrow', text: 'Update State' },
-                        { type: 'node', text: 'World Chunk Streamer' }
-                    ],
-                    algos: ['LOD (Level of Detail) 동적 적용 시스템', '절차적 구름 생성 (Perlin Noise)', 'Verlet Integration 기반 로프 물리'],
-                    stats: [90, 70, 75, 95, 90]
-                }
-            },
-            {
-                id: 'dungeon',
-                title: 'PIXEL DUNGEON',
-                period: '2023.01 - 2023.04 | Unity 2D',
-                desc: '고전 레트로 감성의 픽셀 아트 로그라이크 게임입니다. 매번 변하는 던전과 다양한 아이템 조합이 특징입니다.',
-                features: ['랜덤 던전 생성 알고리즘', '200여 종의 아이템 및 장비', '픽셀 아트 애니메이션'],
-                tech: ['Unity', 'C#', 'Aseprite'],
-                img: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800',
-                youtube: 'https://youtube.com', github: 'https://github.com/zeltina99',
-                arch: {
-                    desc: '데이터 주도 설계(Data-Driven Design)를 통해 아이템과 몬스터 확장이 용이합니다.',
-                    flow: [
-                        { type: 'node', text: 'Game Loop' },
-                        { type: 'arrow', text: 'Turn Tick' },
-                        { type: 'split', nodes: ['Player Action', 'Enemy AI Agent'] },
-                        { type: 'arrow', text: 'Validate Move' },
-                        { type: 'node', text: 'Grid Map System' }
-                    ],
-                    algos: ['BSP (Binary Space Partitioning) 던전 생성', 'Cellular Automata 동굴 생성', 'Dijkstra Map 기반 AI 추적'],
-                    stats: [88, 85, 80, 92, 95]
-                }
-            },
-            {
-                id: 'rhythm',
-                title: 'BEAT GALAXY',
-                period: '2022.09 - 2022.12 | Unity 3D',
-                desc: '우주를 배경으로 펼쳐지는 리듬 액션 게임입니다. 음악의 비트에 맞춰 노트를 처리하며 행성을 여행합니다.',
-                features: ['음악 분석 및 비트 자동 생성', '화려한 파티클 이펙트', '글로벌 랭킹 시스템'],
-                tech: ['Unity', 'C#', 'FMOD'],
-                img: 'https://images.unsplash.com/photo-1514525253440-b393452e8d26?auto=format&fit=crop&q=80&w=800',
-                youtube: 'https://youtube.com', github: 'https://github.com/zeltina99',
-                arch: {
-                    desc: '오디오 스펙트럼 분석 데이터를 시각 효과와 게임플레이에 실시간으로 동기화합니다.',
-                    flow: [
-                        { type: 'node', text: 'Audio Source (MP3)' },
-                        { type: 'arrow', text: 'FFT Analysis' },
-                        { type: 'split', nodes: ['Note Spawner', 'VFX Controller'] },
-                        { type: 'arrow', text: 'Hit 판정' },
-                        { type: 'node', text: 'Score Manager' }
-                    ],
-                    algos: ['FFT (Fast Fourier Transform) 주파수 분석', 'Object Pooling 최적화', 'Audio Latency Compensation'],
-                    stats: [92, 75, 80, 96, 88]
-                }
-            },
-            {
-                id: 'mystery',
-                title: 'MYSTERY MANSION',
-                period: '2022.05 - 2022.08 | Unreal Engine 4',
-                desc: '폐가에서 일어나는 기이한 현상을 조사하는 1인칭 공포 퍼즐 게임입니다. 사실적인 그래픽과 사운드로 공포감을 극대화했습니다.',
-                features: ['물리 기반 상호작용 퍼즐', '3D 사운드 및 공포 연출', '비선형적 스토리 진행'],
-                tech: ['UE4', 'Blueprints', 'C++'],
-                img: 'https://images.unsplash.com/photo-1505567745926-ba89000d255a?auto=format&fit=crop&q=80&w=800',
-                youtube: 'https://youtube.com', github: 'https://github.com/zeltina99',
-                arch: {
-                    desc: '이벤트 기반 스크립팅 시스템으로 복잡한 퍼즐과 스토리 트리거를 관리합니다.',
-                    flow: [
-                        { type: 'node', text: 'Interaction System' },
-                        { type: 'arrow', text: 'Trace Object' },
-                        { type: 'node', text: 'Event Dispatcher' },
-                        { type: 'arrow', text: 'Trigger' },
-                        { type: 'split', nodes: ['Quest Manager', 'Sequencer (Cinematic)'] }
-                    ],
-                    algos: ['Finite State Machine (FSM) 몬스터 AI', 'Dynamic Material Instances', 'Save/Load Serialization'],
-                    stats: [85, 70, 75, 88, 90]
+                    algos: ['콤보 트리 판정 알고리즘', 'FSM 기반 적 AI'],
+                    stats: [80, 85, 75, 90, 80]
                 }
             }
         ];
@@ -471,7 +1147,6 @@
                 this.renderSystemList();
             },
 
-            // Render Game Cards
             renderGameList() {
                 const container = document.getElementById('game-grid-container');
                 container.innerHTML = gameData.map((game, index) => `
@@ -479,32 +1154,30 @@
                         <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/90 z-10"></div>
                         <div class="absolute inset-0 bg-[url('${game.img}')] bg-cover bg-center transition-transform duration-700 group-hover:scale-110"></div>
                         <div class="relative z-20 mt-auto">
-                            <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">${game.title}</h3>
-                            <p class="text-slate-400 text-xs mt-1">${game.period.split('|')[1].trim()}</p>
-                            <p class="text-slate-300 text-sm mt-2 line-clamp-2 opacity-80">${game.desc}</p>
+                            <span class="px-2 py-0.5 bg-cyan-900/80 text-cyan-200 text-[10px] rounded border border-cyan-800 mb-1 inline-block">${game.teamInfo}</span>
+                            <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors leading-tight">${game.title}</h3>
+                            <p class="text-slate-400 text-xs mt-1 font-mono">${game.period.split('-')[0].trim()}</p>
+                            <p class="text-slate-300 text-sm mt-2 line-clamp-2 opacity-80 break-keep">${game.desc}</p>
                             <div class="mt-4 inline-block px-3 py-1 border border-cyan-500/50 rounded-full text-cyan-300 text-xs hover:bg-cyan-500/20 transition-colors">View Details</div>
                         </div>
                     </div>`).join('');
             },
 
-            // Render System Cards (New)
             renderSystemList() {
                 const container = document.getElementById('system-grid-container');
                 container.innerHTML = gameData.map((game, index) => `
                     <div onclick="app.openArchDetail('${game.id}')" class="glass-panel rounded-2xl p-4 h-72 cursor-pointer transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-center items-center group relative overflow-hidden border border-indigo-500/20 hover:border-indigo-400" style="animation-delay: ${index * 100}ms">
                         <div class="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-800 to-slate-900 z-10"></div>
                         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500 to-transparent transition-opacity group-hover:opacity-20"></div>
-                        
-                        <div class="relative z-20 text-center">
+                        <div class="relative z-20 text-center px-2">
                             <div class="text-5xl mb-3 opacity-80 group-hover:scale-110 transition-transform">⚙️</div>
-                            <h3 class="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors">${game.title}</h3>
-                            <p class="text-indigo-200 text-xs mt-1 mb-4">Architecture & Data Flow</p>
+                            <h3 class="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors leading-tight">${game.title}</h3>
+                            <p class="text-indigo-200 text-xs mt-2 mb-4 break-keep">Architecture & Data Flow</p>
                             <div class="inline-block px-3 py-1 bg-indigo-900/50 border border-indigo-500/50 rounded text-indigo-200 text-xs">Analyze Structure</div>
                         </div>
                     </div>`).join('');
             },
 
-            // Navigation Handler
             switchView(viewName) {
                 const views = ['view-main', 'view-games', 'view-systems', 'view-arch-detail'];
                 views.forEach(v => {
@@ -519,81 +1192,141 @@
                 window.scrollTo(0,0);
             },
 
-            // Open Game Modal
             openGameDetail(gameId) {
                 const game = gameData.find(g => g.id === gameId);
                 if (!game) return;
+                
                 document.getElementById('modal-game-title').innerText = game.title;
                 document.getElementById('modal-game-period').innerText = game.period;
+                document.getElementById('modal-game-team').innerText = game.teamInfo;
+                document.getElementById('modal-game-role').innerText = game.role;
                 document.getElementById('modal-game-desc').innerText = game.desc;
-                document.getElementById('modal-game-img').style.backgroundImage = `url('${game.img}')`;
-                document.getElementById('modal-btn-youtube').href = game.youtube;
+                
+                const videoIframe = document.getElementById('modal-game-video');
+                if(game.videoUrl) {
+                    videoIframe.src = game.videoUrl;
+                    videoIframe.parentElement.style.display = 'block';
+                } else {
+                    videoIframe.src = "";
+                    videoIframe.parentElement.style.backgroundImage = `url('${game.img}')`;
+                    videoIframe.parentElement.style.backgroundSize = "cover";
+                    videoIframe.parentElement.style.backgroundPosition = "center";
+                }
+                
                 document.getElementById('modal-btn-github').href = game.github;
-                document.getElementById('modal-game-features').innerHTML = game.features.map(f => `<li>${f}</li>`).join('');
-                document.getElementById('modal-game-tech').innerHTML = game.tech.map(t => `<span class="px-2 py-1 bg-slate-700 rounded border border-slate-600 text-xs text-slate-200">${t}</span>`).join('');
+                document.getElementById('modal-btn-docs').href = game.docs;
+                
+                const techVideoBtn = document.getElementById('modal-btn-tech-video');
+                if(game.techVideo && game.techVideo !== '#') {
+                    techVideoBtn.href = game.techVideo;
+                    techVideoBtn.classList.remove('opacity-50', 'pointer-events-none');
+                } else {
+                    techVideoBtn.href = '#';
+                    techVideoBtn.classList.add('opacity-50', 'pointer-events-none');
+                }
+                
+                document.getElementById('modal-game-features').innerHTML = game.features.map(f => `<li><span class="text-slate-300">${f}</span></li>`).join('');
+                document.getElementById('modal-game-tech').innerHTML = game.tech.map(t => `<span class="px-3 py-1 bg-slate-700/80 rounded shadow border border-slate-600 text-sm text-slate-100 font-bold">${t}</span>`).join('');
+                
                 this.openModal('game');
             },
 
-            // Open Full Page Architecture Detail (New)
             openArchDetail(gameId) {
                 const game = gameData.find(g => g.id === gameId);
                 if (!game) return;
 
-                // 1. Titles
                 document.getElementById('arch-detail-title').innerText = game.title;
                 
-                // 2. Tech Stack Badges
-                document.getElementById('arch-tech-stack').innerHTML = game.tech.map(t => 
-                    `<span class="px-3 py-1 bg-indigo-900/40 border border-indigo-500/30 rounded-lg text-indigo-100 text-sm font-bold shadow-sm">${t}</span>`
-                ).join('');
+                const stdContainer = document.getElementById('arch-standard-details');
+                const customContainer = document.getElementById('arch-custom-details');
 
-                // 3. Flow Chart Rendering
-                const flowContainer = document.getElementById('arch-flow-chart');
-                let flowHTML = '';
-                game.arch.flow.forEach((item, idx) => {
-                    if (item.type === 'node') {
-                        flowHTML += `<div class="flow-node w-48">${item.text}</div>`;
-                    } else if (item.type === 'arrow') {
-                        flowHTML += `<div class="flow-arrow h-8">↓ <span class="text-xs ml-2 text-slate-500">${item.text}</span></div>`;
-                    } else if (item.type === 'split') {
-                        flowHTML += `
-                            <div class="flex gap-4 justify-center w-full">
-                                <div class="flow-arrow rotate-45 transform origin-top-left">sw</div>
-                                <div class="flex gap-4">
-                                    ${item.nodes.map(n => `<div class="flow-node w-40 border-indigo-500/30">${n}</div>`).join('')}
-                                </div>
-                            </div>`; // Simplified split for visual
-                        // Better visual split for vertical layout
-                         flowHTML = flowHTML.replace(/<div class="flex gap-4 justify-center w-full">[\s\S]*?<\/div>/, 
-                            `<div class="flex items-center justify-center gap-2 w-full">
-                                <div class="h-px w-8 bg-slate-600"></div>
-                                <div class="flex gap-4">
-                                    ${item.nodes.map(n => `<div class="flow-node w-40 border-indigo-500/50 bg-indigo-900/20">${n}</div>`).join('')}
-                                </div>
-                                <div class="h-px w-8 bg-slate-600"></div>
-                            </div>`
-                        );
+                if (game.hasCustomArch) {
+                    stdContainer.classList.add('hidden');
+                    customContainer.classList.remove('hidden');
+                    
+                    // 다이어그램별 폰트 사이즈 분기 설정 (레퀴엠: 기본 12px, 파라다이스: 18px 확대)
+                    const isParadise = game.id === 'paradise';
+                    const baseFontSize = isParadise ? '18px' : '12px';
+
+                    mermaid.initialize({
+                        startOnLoad: false,
+                        theme: 'dark',
+                        themeVariables: {
+                            primaryColor: '#2a2a3e',
+                            primaryTextColor: '#ffffff',
+                            primaryBorderColor: '#6366f1',
+                            lineColor: '#94a3b8',
+                            secondaryColor: '#1e1e2e',
+                            tertiaryColor: '#1e1e2e',
+                            fontSize: baseFontSize,
+                            fontFamily: 'Noto Sans KR, sans-serif',
+                            classBorder: '2px',
+                            classText: '#ffffff'
+                        }
+                    });
+
+                    if (game.id === 'requiem') {
+                        customContainer.innerHTML = this.getRequiemArchHTML();
+                    } else if (game.id === 'paradise') {
+                        customContainer.innerHTML = this.getParadiseArchHTML();
                     }
-                });
-                flowContainer.innerHTML = flowHTML;
+                    
+                    setTimeout(async () => {
+                        try {
+                            await mermaid.run({ nodes: document.querySelectorAll('#arch-custom-details .mermaid') });
+                        } catch (e) {
+                            console.error("Mermaid Render Error: ", e);
+                        }
+                    }, 100);
 
-                // 4. Algorithms List
-                document.getElementById('arch-algorithms').innerHTML = game.arch.algos.map(a => 
-                    `<li class="flex items-start gap-2"><span class="text-indigo-400 font-bold">✓</span><span>${a}</span></li>`
-                ).join('');
+                } else {
+                    stdContainer.classList.remove('hidden');
+                    customContainer.classList.add('hidden');
+                    
+                    document.getElementById('arch-tech-stack').innerHTML = game.tech.map(t => 
+                        `<span class="px-3 py-1 bg-indigo-900/40 border border-indigo-500/30 rounded-lg text-indigo-100 text-sm font-bold shadow-sm">${t}</span>`
+                    ).join('');
 
-                // 5. Render Chart
-                this.initDetailChart(game.arch.stats);
+                    const flowContainer = document.getElementById('arch-flow-chart');
+                    let flowHTML = '';
+                    game.arch.flow.forEach((item) => {
+                        if (item.type === 'node') flowHTML += `<div class="flow-node w-48">${item.text}</div>`;
+                        else if (item.type === 'arrow') flowHTML += `<div class="flow-arrow h-8">↓ <span class="text-xs ml-2 text-slate-500">${item.text}</span></div>`;
+                        else if (item.type === 'split') {
+                            flowHTML += `
+                                <div class="flex items-center justify-center gap-2 w-full">
+                                    <div class="h-px w-8 bg-slate-600"></div>
+                                    <div class="flex gap-4">
+                                        ${item.nodes.map(n => `<div class="flow-node w-40 border-indigo-500/50 bg-indigo-900/20">${n}</div>`).join('')}
+                                    </div>
+                                    <div class="h-px w-8 bg-slate-600"></div>
+                                </div>`;
+                        }
+                    });
+                    flowContainer.innerHTML = flowHTML;
+
+                    document.getElementById('arch-algorithms').innerHTML = game.arch.algos.map(a => 
+                        `<li class="flex items-start gap-2"><span class="text-indigo-400 font-bold">✓</span><span>${a}</span></li>`
+                    ).join('');
+
+                    this.initDetailChart(game.arch.stats);
+                }
 
                 this.switchView('arch-detail');
             },
 
             openModal(type) { document.getElementById(`modal-${type}`).classList.remove('hidden'); },
-            closeModal(type) { document.getElementById(`modal-${type}`).classList.add('hidden'); },
+            
+            closeModal(type) { 
+                document.getElementById(`modal-${type}`).classList.add('hidden'); 
+                if(type === 'game') {
+                    document.getElementById('modal-game-video').src = '';
+                }
+            },
 
             initDetailChart(data) {
                 const ctx = document.getElementById('archDetailChart').getContext('2d');
-                if (this.chartInstance) this.chartInstance.destroy(); // Destroy previous chart
+                if (this.chartInstance) this.chartInstance.destroy(); 
                 
                 this.chartInstance = new Chart(ctx, {
                     type: 'radar',
@@ -622,6 +1355,66 @@
                         plugins: { legend: { display: false } }
                     }
                 });
+            },
+
+            getRequiemArchHTML() {
+                const diagrams = [
+                    { key: 'd1',  title: '다이어그램 1 — 모듈 계층 구조',                  size: '',   desc: '프로젝트 전체를 구성하는 3계층 모듈 구조. 최상위 로직 → 공통 시스템 → 데이터 레이어 순으로 단방향 의존성을 유지합니다.' },
+                    { key: 'd2a', title: '다이어그램 2A — 캐릭터 계층 (Player / Enemy)',    size: 'lg', desc: '플레이어와 일반/원거리 적 캐릭터의 상속 구조. ABaseCharacter를 공통 부모로 두고 각 역할에 맞게 기능을 확장합니다.' },
+                    { key: 'd2b', title: '다이어그램 2B — 캐릭터 계층 (Boss / Interface)',  size: 'lg', desc: '보스 캐릭터 계층 및 IBossControlInterface 구현 관계. BossBase를 상속한 각 스테이지 보스가 인터페이스를 통해 외부 시스템과 통신합니다.' },
+                    { key: 'd3',  title: '다이어그램 3 — UI 시스템 구조',                   size: 'xl', desc: 'UBaseWidget을 루트로 하는 위젯 계층 구조. StatComponent의 델리게이트가 HUD와 적 HP 위젯에 이벤트를 브로드캐스트합니다.' },
+                    { key: 'd4',  title: '다이어그램 4 — DataInfo 데이터 구조',             size: 'lg', desc: '게임 내 모든 수치를 관리하는 데이터 구조체 및 열거형. 하드코딩을 배제하고 데이터 주도 설계를 구현하기 위한 기반입니다.' },
+                    { key: 'd5',  title: '다이어그램 5 — StatComponent 상세 설계',          size: 'lg', desc: '모든 캐릭터의 스탯 연산을 전담하는 핵심 컴포넌트. 재생/비재생 스탯 이원화, 타이머 기반 자동 회복, 델리게이트 기반 UI 동기화를 담당합니다.' },
+                    { key: 'd6',  title: '다이어그램 6 — BossBase 패턴 시스템',             size: '',   desc: 'FBossPatternData 구조체 기반의 데이터 주도형 패턴 선택 시스템. 거리·페이즈·가중치 필터링으로 보스가 상황에 맞는 패턴을 스스로 결정합니다.' },
+                    { key: 'd7',  title: '다이어그램 7 — Player 시스템 상세',               size: 'xl', desc: '플레이어 캐릭터와 연결된 핵심 컴포넌트 구조. 락온·무기 숙련도·입력 설정이 각각 독립 컴포넌트로 분리되어 단일 책임 원칙을 준수합니다.' },
+                    { key: 'd8',  title: '다이어그램 8 — Enemy 및 Spawner 시스템',          size: 'lg', desc: '일반 적 캐릭터의 AI 상태 관리, 스포너를 통한 오브젝트 재활용(Pooling), 이중 체력바 위젯까지 적 시스템 전체를 포괄합니다.' },
+                ];
+
+                return `<div class="space-y-12">` +
+                    diagrams.map(d => {
+                        let sizeClass = 'mermaid-container';
+                        if (d.size === 'lg') sizeClass += ' mermaid-container-lg';
+                        if (d.size === 'xl') sizeClass += ' mermaid-container-xl';
+                        
+                        return `
+                            <div class="glass-panel p-6 rounded-2xl w-full border border-indigo-500/20">
+                                <h2 class="text-xl font-bold text-white mb-4 border-l-4 border-cyan-500 pl-3">${d.title}</h2>
+                                <div class="${sizeClass} w-full overflow-x-auto">
+                                    <pre class="mermaid">${escapeHtml(DIAGRAMS_REQUIEM[d.key])}</pre>
+                                </div>
+                                <p class="mt-4 text-sm text-slate-400 leading-relaxed border-t border-white/5 pt-3 break-keep">${d.desc}</p>
+                            </div>`;
+                    }).join('') +
+                `</div>`;
+            },
+
+            getParadiseArchHTML() {
+                const diagrams = [
+                    { key: 'p1', title: 'UI 다이어그램 1 — HUD 계층 및 설정 팝업', size: 'lg',
+                      desc: '타이틀·로비·인게임 3개의 최상위 HUD 위젯이 각각 USettingsPopupWidget을 소유합니다. ESC 입력 시 컨트롤러가 HUD를 통해 팝업을 토글하는 구조입니다.' },
+                    { key: 'p2', title: 'UI 다이어그램 2 — 로비 UI 및 편성 시스템', size: 'lg',
+                      desc: 'LobbyHUD가 TopBar·MenuPanel을 자식으로 가지고 WidgetSwitcher를 통해 SquadMainWidget을 전환합니다. SquadMain은 Mediator 패턴으로 Inventory·Formation·Detail 패널을 중재합니다.' },
+                    { key: 'p3', title: 'UI 다이어그램 3 — 소환 및 가챠 결과 시스템', size: 'lg',
+                      desc: '소환 팝업(SummonPopup)이 탭 스위처로 캐릭터·장비 패널을 전환하고, 가챠 완료 후 GachaResultWidget이 1연차/10연차 레이아웃을 WidgetSwitcher로 분기합니다.' },
+                    { key: 'p4', title: 'UI 다이어그램 4 — 인게임 HUD 및 로딩 위젯', size: 'lg',
+                      desc: 'InGameHUD가 파티 상태·소환 컨트롤·조이스틱·타이머·거점 HP 위젯을 통합 관리합니다. LoadingWidget은 MPC(Material Parameter Collection)로 연출합니다.' },
+                ];
+
+                return `<div class="space-y-12">` +
+                    diagrams.map(d => {
+                        let sizeClass = 'mermaid-container is-paradise';
+                        if (d.size === 'lg') sizeClass += ' mermaid-container-lg';
+                        if (d.size === 'xl') sizeClass += ' mermaid-container-xl';
+                        return `
+                            <div class="glass-panel p-6 rounded-2xl w-full border border-indigo-500/20">
+                                <h2 class="text-xl font-bold text-white mb-4 border-l-4 border-purple-500 pl-3">${d.title}</h2>
+                                <div class="${sizeClass} w-full overflow-x-auto">
+                                    <pre class="mermaid">${escapeHtml(DIAGRAMS_PARADISE[d.key])}</pre>
+                                </div>
+                                <p class="mt-4 text-sm text-slate-400 leading-relaxed border-t border-white/5 pt-3 break-keep">${d.desc}</p>
+                            </div>`;
+                    }).join('') +
+                `</div>`;
             }
         };
 
